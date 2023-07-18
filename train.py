@@ -72,14 +72,14 @@ class Trainer:
                 if idx > current_steps:
                     batch = {k:v.to(self.model.device) for k, v in batch.items()}           
                     if deep_speed:
-                        self.model.module.train()
+                        # self.model.module.train()
                         outputs = self.model(input_ids = batch["input_ids"],
                                                 attention_mask = batch["attention_mask"],
                                                 labels = batch["labels"],
                                                 return_dict = True)
                         loss = outputs.loss
-                        print(f"MODEL:{self.model}")
-                        self.model.module.backward(loss)  
+                        print(f"LOSS:{loss}")
+                        self.model.backward(loss)  
                         self.model.step()  
                     else:
                         self.optimizer.zero_grad()
