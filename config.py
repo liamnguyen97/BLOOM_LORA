@@ -24,6 +24,6 @@ class Config:
         lora_model = get_peft_model(model, lora_config)
         return lora_model
     
-    def get_model_hidden_size(model_name):
+    def get_model_hidden_size(self,model_name):
         return AutoConfig.from_pretrained(model_name).d_model
     
