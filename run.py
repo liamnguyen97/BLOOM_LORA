@@ -27,7 +27,7 @@ if __name__ == "__main__":
     tokenizer = config.tokenizer(model_checkpoint = "bigscience/bloom")
     model = config.load_pretrained_model(model_checkpoint = "bigscience/bloom-560m")
     lora_model = config.add_lora(model = model, r = 8, lora_alpha = 16, lora_dropout = 0.05)
-    lora_model.to(device)
+    # lora_model.to(device)
 
     # Prompt 
     prompter = Prompter()

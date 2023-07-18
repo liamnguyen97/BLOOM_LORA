@@ -24,7 +24,8 @@ class EVALUATEandTEST:
         predicted_texts, correct_texts = [], []
         current_gen_mode = gen_mode
         for i, batch in enumerate(dataset):
-            batch = {k:v.to(self.device) for k, v in batch.items()}
+            # batch = {k:v.to(self.device) for k, v in batch.items()}
+            batch = {k:v for k, v in batch.items()}
             with torch.no_grad():
                 with self.ctx:
                     outputs = model(input_ids = batch["input_ids"],
@@ -91,7 +92,8 @@ class EVALUATEandTEST:
         
         prompt = self.prompter.generate_prompt(instruction = instruction, input = input)
         inputs = self.tokenizer(prompt, return_tensors = "pt")
-        inputs = {k: v.to(self.device) for k, v in inputs.items()}
+        # inputs = {k: v.to(self.device) for k, v in inputs.items()}
+        inputs = {k: v for k, v in inputs.items()}
         outputs = model.generate(input_ids = inputs["input_ids"],
                                  attention_mask = inputs["attention_mask"],
                                  max_new_tokens = 256,
