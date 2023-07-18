@@ -77,6 +77,7 @@ class Trainer:
                                                 labels = batch["labels"],
                                                 return_dict = True)
                         loss = outputs.loss
+                        print(f"MODEL:{self.model}")
                         self.model.backward(loss)  
                         self.model.step()  
                     else:
