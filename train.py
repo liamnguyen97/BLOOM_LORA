@@ -10,13 +10,15 @@ class Trainer:
                  model,
                  gradient_accumulation_steps: int,
                  device,
+                 optimizer,
                  evaluate_fn,
                  mixed_precision_dtype,
                  scaler,
                  ctx):
         self.epochs = epochs
         self.model = model
-        self.optimizer = AdamW(model.parameters(), lr = lr)
+        # self.optimizer = AdamW(model.parameters(), lr = lr)
+        self.optimizer = optimizer
         self.gradient_accumulation_steps = gradient_accumulation_steps
         self.device = device
         self._eval = evaluate_fn
@@ -79,6 +81,7 @@ class Trainer:
                                                 return_dict = True)
                         loss = outputs.loss
                         print(f"LOSS:{loss}")
+                        print(f"LOSS2:{self.optimizer.cur_scale}")
                         self.model.backward(loss)  
                         self.model.step()  
                     else:

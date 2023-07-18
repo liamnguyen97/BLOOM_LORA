@@ -24,8 +24,7 @@ class EVALUATEandTEST:
         predicted_texts, correct_texts = [], []
         current_gen_mode = gen_mode
         for i, batch in enumerate(dataset):
-            # batch = {k:v.to(self.device) for k, v in batch.items()}
-            batch = {k:v for k, v in batch.items()}
+            batch = {k:v.to(model.device) for k, v in batch.items()}
             with torch.no_grad():
                 with self.ctx:
                     outputs = model(input_ids = batch["input_ids"],
@@ -84,31 +83,30 @@ class EVALUATEandTEST:
         else:
             return {"loss": total_loss/(samples_eval + 1 if samples_eval is not None else len(dataset))}
     
-    def test(self,
-             model,
-             instruction: str,
-             input: str = None,
-             label: str = None):
+    # def test(self,
+    #          model,
+    #          instruction: str,
+    #          input: str = None,
+    #          label: str = None):
         
-        prompt = self.prompter.generate_prompt(instruction = instruction, input = input)
-        inputs = self.tokenizer(prompt, return_tensors = "pt")
-        # inputs = {k: v.to(self.device) for k, v in inputs.items()}
-        inputs = {k: v for k, v in inputs.items()}
-        outputs = model.generate(input_ids = inputs["input_ids"],
-                                 attention_mask = inputs["attention_mask"],
-                                 max_new_tokens = 256,
-                                 no_repeat_ngram_size = 3,
-                                 num_beams = 1,
-                                 top_k = 40,
-                                 bos_token_id = self.tokenizer.bos_token_id,
-                                 eos_token_id = self.tokenizer.eos_token_id,
-                                 pad_token_id = self.tokenizer.pad_token_id,
-                                 early_stopping = True)
-        text = self.tokenizer.batch_decode(outputs, skip_special_tokens = True)[0]
-        response = self.prompter.get_response(text)
-        if label is not None:
-            return {"label": label,
-                    "response": response}
-        else:
-            return {"response": response}
+    #     prompt = self.prompter.generate_prompt(instruction = instruction, input = input)
+    #     inputs = self.tokenizer(prompt, return_tensors = "pt")
+    #     inputs = {k: v.to(self.device) for k, v in inputs.items()}
+    #     outputs = model.generate(input_ids = inputs["input_ids"],
+    #                              attention_mask = inputs["attention_mask"],
+    #                              max_new_tokens = 256,
+    #                              no_repeat_ngram_size = 3,
+    #                              num_beams = 1,
+    #                              top_k = 40,
+    #                              bos_token_id = self.tokenizer.bos_token_id,
+    #                              eos_token_id = self.tokenizer.eos_token_id,
+    #                              pad_token_id = self.tokenizer.pad_token_id,
+    #                              early_stopping = True)
+    #     text = self.tokenizer.batch_decode(outputs, skip_special_tokens = True)[0]
+    #     response = self.prompter.get_response(text)
+    #     if label is not None:
+    #         return {"label": label,
+    #                 "response": response}
+    #     else:
+    #         return {"response": response}
         
