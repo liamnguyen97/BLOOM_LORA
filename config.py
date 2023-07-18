@@ -1,5 +1,5 @@
 import transformers
-from transformers import BloomForCausalLM, AutoTokenizer, get_scheduler 
+from transformers import BloomForCausalLM, AutoTokenizer, AutoConfig 
 from peft import LoraConfig, get_peft_model, PeftConfig, PeftModel
 
 class Config:
@@ -23,4 +23,7 @@ class Config:
                                  task_type = "CAUSAL_LM")
         lora_model = get_peft_model(model, lora_config)
         return lora_model
+    
+    def get_model_hidden_size(model_name):
+        return AutoConfig.from_pretrained(model_name)
     
