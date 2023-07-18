@@ -95,6 +95,18 @@ if __name__ == "__main__":
                 "stage3_prefetch_bucket_size": 0.9 * model_hidden_size * model_hidden_size,
                 "stage3_param_persistence_threshold": 10 * model_hidden_size
             },
+            "optimizer": {
+                "type": "Adam",
+                "params": {
+                "lr": 0.001,
+                "betas": [
+                    0.8,
+                    0.999
+                ],
+                "eps": 1e-8,
+                "weight_decay": 3e-7
+                }
+            },
             "steps_per_print": 300,
             "train_batch_size": train_batch_size,
             "train_micro_batch_size_per_gpu": 1,
