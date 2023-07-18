@@ -25,5 +25,5 @@ class Config:
         return lora_model
     
     def get_model_hidden_size(model_name):
-        return AutoConfig.from_pretrained(model_name)
+        return AutoConfig.from_pretrained(model_name).d_model
     

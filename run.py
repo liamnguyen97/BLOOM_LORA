@@ -86,7 +86,7 @@ if __name__ == "__main__":
             "zero_optimization": {
                 "stage": 3,
                 "offload_param": {
-                    "device": "cpu",
+                    "device": "None",
                     "pin_memory": True
                 },
                 "overlap_comm": True,
