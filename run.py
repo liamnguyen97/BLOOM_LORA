@@ -122,5 +122,5 @@ if __name__ == "__main__":
                   samples_gen = 100,
                   samples_eval = None,
                   gen_mode = False,
-                  deep_speed= False,
+                  deep_speed= True,
                   checkpoint = None)
