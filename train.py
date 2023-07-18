@@ -59,10 +59,10 @@ class Trainer:
             current_steps = 0
             num_steps = num_update_steps_per_epoch * self.epochs
             progress_bar = tqdm(range(num_steps))
-            lr_scheduler = get_scheduler("cosine",
-                                         optimizer = self.optimizer,
-                                         num_warmup_steps = 100,
-                                         num_training_steps = num_steps)
+            # lr_scheduler = get_scheduler("cosine",
+            #                              optimizer = self.optimizer,
+            #                              num_warmup_steps = 100,
+            #                              num_training_steps = num_steps)
             total_loss = 0
             
         idx = 0
