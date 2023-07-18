@@ -80,8 +80,10 @@ class Trainer:
                                                 labels = batch["labels"],
                                                 return_dict = True)
                         loss = outputs.loss
+                        total_loss += loss.item()
                         print(f"LOSS:{loss}")
                         print(f"LOSS2:{self.optimizer.cur_scale}")
+                        print(f"TOTAL LOSS:{total_loss}")
                         self.model.backward(loss)  
                         self.model.step()  
                     else:

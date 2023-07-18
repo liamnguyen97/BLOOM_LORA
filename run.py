@@ -119,6 +119,7 @@ if __name__ == "__main__":
                       model = ds_engine,
                       gradient_accumulation_steps = 4,
                       device = device,
+                      optimizer = optimizer ,
                       evaluate_fn = evalntest.evaluate,
                       mixed_precision_dtype = mixed_precision_dtype,
                       scaler = scaler, 
