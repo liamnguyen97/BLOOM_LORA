@@ -70,7 +70,7 @@ class Trainer:
             for batch in train_dataloader:
                 idx += 1
                 if idx > current_steps:
-                    batch = {k:v.to(self.device) for k, v in batch.items()}           
+                    batch = {k:v for k, v in batch.items()}           
                     if deep_speed:
                         outputs = self.model(input_ids = batch["input_ids"],
                                                 attention_mask = batch["attention_mask"],
