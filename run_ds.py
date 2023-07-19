@@ -3,13 +3,13 @@ from prompt import Prompter
 from process_analysis import DataProcess
 from model_inputs import MODEL_INPUTS
 from eval_and_test import EVALUATEandTEST
-from deepspeed import Trainer
+from trainner_ds import Trainer
 import torch
 from contextlib import nullcontext
 from torch.cuda.amp import GradScaler, autocast
 import evaluate
 from transformers import AutoTokenizer, AutoConfig, AutoModelForSeq2SeqLM
-import deepspeed
+import trainner_ds
 import os
 
 if __name__ == "__main__":
@@ -62,7 +62,7 @@ if __name__ == "__main__":
     local_rank = int(os.getenv("LOCAL_RANK", "0"))
     world_size = int(os.getenv("WORLD_SIZE", "1"))
     torch.cuda.set_device(local_rank)
-    deepspeed.init_distributed()
+    trainner_ds.init_distributed()
     train_batch_size = 1 * world_size
 
     ds_config = {
@@ -111,7 +111,7 @@ if __name__ == "__main__":
             "train_micro_batch_size_per_gpu": 2,
             "wall_clock_breakdown": False
     }
-    ds_engine, optimizer, train_dataloader, _ = deepspeed.initialize(model=lora_model,training_data=train_data, config_params=ds_config)
+    ds_engine, optimizer, train_dataloader, _ = trainner_ds.initialize(model=lora_model,training_data=train_data, config_params=ds_config)
     # ds_engine.module.train()  # train
     trainer = Trainer(lr = 1e-4,
                       epochs = 3,
