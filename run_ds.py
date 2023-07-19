@@ -9,7 +9,7 @@ from contextlib import nullcontext
 from torch.cuda.amp import GradScaler, autocast
 import evaluate
 from transformers import AutoTokenizer, AutoConfig, AutoModelForSeq2SeqLM
-import trainner_ds
+import deepspeed
 import os
 
 if __name__ == "__main__":
