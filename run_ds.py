@@ -78,12 +78,12 @@ if __name__ == "__main__":
 
             "optimizer": {
                 "type": "AdamW",
-                "params": {
-                    "lr": "auto",
-                    "betas": "auto",
-                    "eps": "auto",
-                    "weight_decay": "auto"
-                }
+                # "params": {
+                #     "lr": "auto",
+                #     "betas": "auto",
+                #     "eps": "auto",
+                #     "weight_decay": "auto"
+                # }
             },
 
             "scheduler": {
