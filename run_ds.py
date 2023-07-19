@@ -109,6 +109,7 @@ if __name__ == "__main__":
             "steps_per_print": 300,
             "train_batch_size": train_batch_size,
             "train_micro_batch_size_per_gpu": 2,
+            "gradient_accumulation_steps": 4,
             "wall_clock_breakdown": False
     }
     ds_engine, optimizer, train_dataloader, _ = deepspeed.initialize(model=lora_model,training_data=train_data, config_params=ds_config)
