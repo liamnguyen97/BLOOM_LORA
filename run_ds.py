@@ -11,7 +11,7 @@ import evaluate
 from transformers import AutoTokenizer, AutoConfig, AutoModelForSeq2SeqLM
 import deepspeed
 import os
-
+import transformers
 if __name__ == "__main__":
 
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
@@ -172,7 +172,10 @@ if __name__ == "__main__":
             "gradient_accumulation_steps": 1,
             "wall_clock_breakdown": False
         }
-    ds_engine, optimizer, train_dataloader, _ = deepspeed.initialize(model=lora_model,training_data=train_data, config_params=ds_config)
+    ds_engine, optimizer, train_dataloader, _ = deepspeed.initialize(model=lora_model,training_data=train_data, 
+                                                collate_fn = transformers.DataCollatorForSeq2Seq(tokenizer = tokenizer,
+                                                padding = False,
+                                                return_tensors = "pt"),  config_params=ds_config)
     # ds_engine.module.train()  # train
     trainer = Trainer(lr = 1e-4,
                       epochs = 3,
