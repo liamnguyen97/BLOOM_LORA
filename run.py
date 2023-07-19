@@ -53,7 +53,7 @@ if __name__ == "__main__":
 
     train_dataloader, valid_dataloader = model_inputs.prepare_dataloader(train_data,
                                                                          valid_data,
-                                                                         batch_size = 4)
+                                                                         batch_size = 2)
 
 
     # Train
@@ -80,7 +80,8 @@ if __name__ == "__main__":
                   display_steps = 500,
                   save_steps = 3000,
                   save_name = "bloom-560m-checkpoint.pt",
-                  valid_dataloader = valid_dataloader,
+                #   valid_dataloader = valid_dataloader,
+                  valid_dataloader= None,
                   samples_gen = 100,
                   samples_eval = None,
                   gen_mode = False,
