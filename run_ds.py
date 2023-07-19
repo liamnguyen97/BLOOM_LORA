@@ -68,7 +68,7 @@ if __name__ == "__main__":
     
     ds_config = {
             "fp16": {
-                "enabled": "auto",
+                "enabled": True,
                 "loss_scale": 0,
                 "loss_scale_window": 1000,
                 "initial_scale_power": 16,
@@ -77,7 +77,7 @@ if __name__ == "__main__":
             },
 
             "optimizer": {
-                "type": "Adam",
+                "type": "AdamW",
                 "params": {
                     "lr": "auto",
                     "betas": "auto",
