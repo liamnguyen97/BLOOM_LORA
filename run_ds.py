@@ -168,7 +168,7 @@ if __name__ == "__main__":
 
             "steps_per_print": 300,
             "train_batch_size": train_batch_size,
-            "train_micro_batch_size_per_gpu": 4,
+            "train_micro_batch_size_per_gpu": 2,
             "gradient_accumulation_steps": 1,
             "wall_clock_breakdown": False
         }
