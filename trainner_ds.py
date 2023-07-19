@@ -23,6 +23,7 @@ class Trainer:
         num_steps = num_update_steps_per_epoch * self.epochs
         progress_bar = tqdm(range(num_steps))
         idx = 0
+        current_steps = 0
         for epoch in range(self.epochs):
             
             self.model.train()
