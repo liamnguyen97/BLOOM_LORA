@@ -174,7 +174,7 @@ if __name__ == "__main__":
         }
     ds_engine, optimizer, train_dataloader, _ = deepspeed.initialize(model=lora_model,training_data=train_data, 
                                                 collate_fn = transformers.DataCollatorForSeq2Seq(tokenizer = tokenizer,
-                                                padding = False,
+                                                padding = True,
                                                 return_tensors = "pt"),  config_params=ds_config)
     # ds_engine.module.train()  # train
     trainer = Trainer(lr = 1e-4,
