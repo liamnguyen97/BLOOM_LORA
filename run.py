@@ -53,7 +53,7 @@ if __name__ == "__main__":
 
     train_dataloader, valid_dataloader = model_inputs.prepare_dataloader(train_data,
                                                                          valid_data,
-                                                                         batch_size = 2)
+                                                                         batch_size = 4)
 
 
     # Train
@@ -67,7 +67,7 @@ if __name__ == "__main__":
     trainer = Trainer(lr = 1e-4,
                       epochs = 5,
                       model = lora_model,
-                      gradient_accumulation_steps = 4,
+                      gradient_accumulation_steps = 1,
                       device = device,
                       evaluate_fn = evalntest.evaluate,
                       mixed_precision_dtype = mixed_precision_dtype,

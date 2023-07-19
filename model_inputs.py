@@ -42,14 +42,14 @@ class MODEL_INPUTS:
                            batch_size: int):
         
         train_dataloader = torch.utils.data.DataLoader(dataset = train_data,
-                                                       batch_size = batch_size,)
-                                                    #    collate_fn = transformers.DataCollatorForSeq2Seq(tokenizer = self.tokenizer,
-                                                    #                                                     padding = False,
-                                                    #                                                     return_tensors = "pt"))
+                                                       batch_size = batch_size,
+                                                       collate_fn = transformers.DataCollatorForSeq2Seq(tokenizer = self.tokenizer,
+                                                                                                        padding = True,
+                                                                                                        return_tensors = "pt"))
         valid_dataloader = torch.utils.data.DataLoader(dataset = valid_data,
-                                                       batch_size = batch_size,)
-                                                    #    collate_fn = transformers.DataCollatorForSeq2Seq(tokenizer = self.tokenizer,
-                                                    #                                                     padding = False,
-                                                    #                                                     return_tensors = "pt"))
+                                                       batch_size = batch_size,
+                                                       collate_fn = transformers.DataCollatorForSeq2Seq(tokenizer = self.tokenizer,
+                                                                                                        padding = True,
+                                                                                                        return_tensors = "pt"))
         return train_dataloader, valid_dataloader
 
