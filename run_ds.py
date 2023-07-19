@@ -66,6 +66,56 @@ if __name__ == "__main__":
     train_batch_size = 1 * world_size
 
     
+    # ds_config = {
+    #         "fp16": {
+    #             "enabled": True,
+    #             "loss_scale": 0,
+    #             "loss_scale_window": 1000,
+    #             "initial_scale_power": 16,
+    #             "hysteresis": 2,
+    #             "min_loss_scale": 1
+    #         },
+
+    #         "optimizer": {
+    #            "type": "Adam",
+    #             "params": {
+    #             "lr": 0.001,
+    #             "betas": [
+    #                 0.8,
+    #                 0.999
+    #             ],
+    #             "eps": 1e-8,
+    #             "weight_decay": 3e-7
+    #             }
+    #         },
+
+    #         "scheduler": {
+    #             "type": "WarmupLR",
+    #             "params": {
+    #                 "warmup_min_lr": "auto",
+    #                 "warmup_max_lr": "auto",
+    #                 "warmup_num_steps": "auto"
+    #             }
+    #         },
+    #         "zero_optimization": {
+    #             "stage": 3,
+    #             "offload_param": {
+    #                 "device": "none",
+    #                 "pin_memory": True
+    #             },
+    #             "overlap_comm": True,
+    #             "contiguous_gradients": True,
+    #             "reduce_bucket_size": model_hidden_size * model_hidden_size,
+    #             "stage3_prefetch_bucket_size": 0.9 * model_hidden_size * model_hidden_size,
+    #             "stage3_param_persistence_threshold": 10 * model_hidden_size
+    #         },
+           
+    #         "steps_per_print": 300,
+    #         "train_batch_size": train_batch_size,
+    #         "train_micro_batch_size_per_gpu": 1,
+    #         "gradient_accumulation_steps": 1,
+    #         "wall_clock_breakdown": False
+    # }
     ds_config = {
             "fp16": {
                 "enabled": True,
@@ -77,45 +127,51 @@ if __name__ == "__main__":
             },
 
             "optimizer": {
-               "type": "Adam",
+                "type": "AdamW",
                 "params": {
-                "lr": 0.001,
-                "betas": [
-                    0.8,
-                    0.999
-                ],
-                "eps": 1e-8,
-                "weight_decay": 3e-7
+                    "lr": 3e-5,
+                    "betas": [0.8, 0.999],
+                    "eps": 1e-8,
+                    "weight_decay": 3e-7
                 }
             },
 
             "scheduler": {
                 "type": "WarmupLR",
                 "params": {
-                    "warmup_min_lr": "auto",
-                    "warmup_max_lr": "auto",
-                    "warmup_num_steps": "auto"
+                    "warmup_min_lr": 0,
+                    "warmup_max_lr": 3e-5,
+                    "warmup_num_steps": 500
                 }
             },
+
             "zero_optimization": {
                 "stage": 3,
+                "offload_optimizer": {
+                    "device": "cpu",
+                    "pin_memory": True
+                },
                 "offload_param": {
-                    "device": "none",
+                    "device": "cpu",
                     "pin_memory": True
                 },
                 "overlap_comm": True,
                 "contiguous_gradients": True,
-                "reduce_bucket_size": model_hidden_size * model_hidden_size,
-                "stage3_prefetch_bucket_size": 0.9 * model_hidden_size * model_hidden_size,
-                "stage3_param_persistence_threshold": 10 * model_hidden_size
+                "sub_group_size": 1e9,
+                "reduce_bucket_size": 1e6,
+                "stage3_prefetch_bucket_size": 0.94e6,
+                "stage3_param_persistence_threshold": 1e4,
+                "stage3_max_live_parameters": 1e9,
+                "stage3_max_reuse_distance": 1e9,
+                "stage3_gather_16bit_weights_on_model_save": True
             },
-           
+
             "steps_per_print": 300,
             "train_batch_size": train_batch_size,
             "train_micro_batch_size_per_gpu": 1,
             "gradient_accumulation_steps": 1,
             "wall_clock_breakdown": False
-    }
+        }
     ds_engine, optimizer, train_dataloader, _ = deepspeed.initialize(model=lora_model,training_data=train_data, config_params=ds_config)
     # ds_engine.module.train()  # train
     trainer = Trainer(lr = 1e-4,
