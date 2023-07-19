@@ -10,15 +10,13 @@ class Trainer:
                  model,
                  gradient_accumulation_steps: int,
                  device,
-                 optimizer,
                  evaluate_fn,
                  mixed_precision_dtype,
                  scaler,
                  ctx):
         self.epochs = epochs
         self.model = model
-        # self.optimizer = AdamW(model.parameters(), lr = lr)
-        self.optimizer = optimizer
+        self.optimizer = AdamW(model.parameters(), lr = lr)
         self.gradient_accumulation_steps = gradient_accumulation_steps
         self.device = device
         self._eval = evaluate_fn
@@ -36,12 +34,11 @@ class Trainer:
               samples_gen: int = None,
               samples_eval: int = None,
               gen_mode: bool = False,
-              deep_speed: bool = False,
               checkpoint = None):
         
         num_update_steps_per_epoch = len(train_dataloader)
         
-        if checkpoint is not None and not deep_speed:
+        if checkpoint is not None:
             current_steps = checkpoint["current_steps"]
             self.optimizer.load_state_dict(checkpoint["optimizer_state_dict"])
             num_steps = num_update_steps_per_epoch * self.epochs - current_steps
@@ -59,10 +56,10 @@ class Trainer:
             current_steps = 0
             num_steps = num_update_steps_per_epoch * self.epochs
             progress_bar = tqdm(range(num_steps))
-            # lr_scheduler = get_scheduler("cosine",
-            #                              optimizer = self.optimizer,
-            #                              num_warmup_steps = 100,
-            #                              num_training_steps = num_steps)
+            lr_scheduler = get_scheduler("cosine",
+                                         optimizer = self.optimizer,
+                                         num_warmup_steps = 100,
+                                         num_training_steps = num_steps)
             total_loss = 0
             
         idx = 0
@@ -72,44 +69,30 @@ class Trainer:
             for batch in train_dataloader:
                 idx += 1
                 if idx > current_steps:
-                    batch = {k:v.to(self.model.device) for k, v in batch.items()}           
-                    if deep_speed:
-                        # self.model.module.train()
+                    batch = {k:v.to(self.device) for k, v in batch.items()}
+                    self.optimizer.zero_grad()
+                    with self.ctx:
                         outputs = self.model(input_ids = batch["input_ids"],
-                                                attention_mask = batch["attention_mask"],
-                                                labels = batch["labels"],
-                                                return_dict = True)
-                        loss = outputs.loss
-                        total_loss += loss.item()
-                        print(f"LOSS:{loss}")
-                        print(f"LOSS2:{self.optimizer.cur_scale}")
-                        print(f"TOTAL LOSS:{total_loss}")
-                        self.model.backward(loss)  
-                        self.model.step()  
-                    else:
-                        self.optimizer.zero_grad()
-                        with self.ctx:
-                            outputs = self.model(input_ids = batch["input_ids"],
-                                                attention_mask = batch["attention_mask"],
-                                                labels = batch["labels"],
-                                                return_dict = True)
-                        loss = outputs.loss
-                        total_loss += loss.item()
+                                             attention_mask = batch["attention_mask"],
+                                             labels = batch["labels"],
+                                             return_dict = True)
+                    loss = outputs.loss
+                    total_loss += loss.item()
+                    
+                    loss /= self.gradient_accumulation_steps
+                    if self.mixed_precision_dtype:
+                        self.scaler.scale(loss).backward()
                         
-                        loss /= self.gradient_accumulation_steps
-
-                        if self.mixed_precision_dtype:
-                            self.scaler.scale(loss).backward()
+                        if idx % self.gradient_accumulation_steps == 0:
+                            self.scaler.step(self.optimizer)
+                            lr_scheduler.step()
+                            self.scaler.update()
                             
-                            if idx % self.gradient_accumulation_steps == 0:
-                                self.scaler.step(self.optimizer)
-                                lr_scheduler.step()
-                                self.scaler.update()
-                        else:
-                            loss.backward()
-                            if idx % self.gradient_accumulation_steps == 0:
-                                self.optimizer.step()
-                                lr_scheduler.step()
+                    else:
+                        loss.backward()
+                        if idx % self.gradient_accumulation_steps == 0:
+                            self.optimizer.step()
+                            lr_scheduler.step()
                     
                     progress_bar.update(1)
                     current_steps += 1
@@ -143,4 +126,3 @@ class Trainer:
                                         "total_loss": total_loss},
                                        save_name)
                             print("****** Save successfully ******")
-

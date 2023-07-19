@@ -9,9 +9,6 @@ import torch
 from contextlib import nullcontext
 from torch.cuda.amp import GradScaler, autocast
 import evaluate
-from transformers import AutoTokenizer, AutoConfig, AutoModelForSeq2SeqLM
-import deepspeed
-import os
 
 if __name__ == "__main__":
 
@@ -67,59 +64,11 @@ if __name__ == "__main__":
                                 prompter = prompter,
                                 ctx = ctx)
     
-
-    model_hidden_size = config.get_model_hidden_size("bigscience/bloom-560m")
-    # distributed setup
-    local_rank = int(os.getenv("LOCAL_RANK", "0"))
-    world_size = int(os.getenv("WORLD_SIZE", "1"))
-    torch.cuda.set_device(local_rank)
-    deepspeed.init_distributed()
-    train_batch_size = 1 * world_size
-
-    ds_config = {
-            "fp16": {
-                "enabled": True
-            },
-            "bf16": {
-                "enabled": False
-            },
-            "zero_optimization": {
-                "stage": 3,
-                "offload_param": {
-                    "device": "none",
-                    "pin_memory": True
-                },
-                "overlap_comm": True,
-                "contiguous_gradients": True,
-                "reduce_bucket_size": model_hidden_size * model_hidden_size,
-                "stage3_prefetch_bucket_size": 0.9 * model_hidden_size * model_hidden_size,
-                "stage3_param_persistence_threshold": 10 * model_hidden_size
-            },
-            "optimizer": {
-                "type": "Adam",
-                "params": {
-                "lr": 0.001,
-                "betas": [
-                    0.8,
-                    0.999
-                ],
-                "eps": 1e-8,
-                "weight_decay": 3e-7
-                }
-            },
-            "steps_per_print": 300,
-            "train_batch_size": train_batch_size,
-            "train_micro_batch_size_per_gpu": 1,
-            "wall_clock_breakdown": False
-    }
-    ds_engine, optimizer, train_dataloader, _ = deepspeed.initialize(model=lora_model,training_data=train_data, config_params=ds_config)
-    # ds_engine.module.train()  # train
     trainer = Trainer(lr = 1e-4,
                       epochs = 5,
-                      model = ds_engine,
+                      model = lora_model,
                       gradient_accumulation_steps = 4,
                       device = device,
-                      optimizer = optimizer ,
                       evaluate_fn = evalntest.evaluate,
                       mixed_precision_dtype = mixed_precision_dtype,
                       scaler = scaler, 
@@ -135,5 +84,4 @@ if __name__ == "__main__":
                   samples_gen = 100,
                   samples_eval = None,
                   gen_mode = False,
-                  deep_speed= True,
                   checkpoint = None)
