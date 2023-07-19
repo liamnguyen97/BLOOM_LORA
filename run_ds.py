@@ -62,7 +62,7 @@ if __name__ == "__main__":
     local_rank = int(os.getenv("LOCAL_RANK", "0"))
     world_size = int(os.getenv("WORLD_SIZE", "1"))
     torch.cuda.set_device(local_rank)
-    trainner_ds.init_distributed()
+    deepspeed.init_distributed()
     train_batch_size = 1 * world_size
 
     ds_config = {
@@ -111,7 +111,7 @@ if __name__ == "__main__":
             "train_micro_batch_size_per_gpu": 2,
             "wall_clock_breakdown": False
     }
-    ds_engine, optimizer, train_dataloader, _ = trainner_ds.initialize(model=lora_model,training_data=train_data, config_params=ds_config)
+    ds_engine, optimizer, train_dataloader, _ = deepspeed.initialize(model=lora_model,training_data=train_data, config_params=ds_config)
     # ds_engine.module.train()  # train
     trainer = Trainer(lr = 1e-4,
                       epochs = 3,
