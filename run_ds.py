@@ -101,7 +101,7 @@ if __name__ == "__main__":
                 "pin_memory": True
             },
             "offload_param": {
-                "device": "cpu",
+                "device": "none",
                 "pin_memory": True
             },
             "overlap_comm": True,
