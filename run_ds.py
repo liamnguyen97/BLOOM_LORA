@@ -148,11 +148,11 @@ if __name__ == "__main__":
             "zero_optimization": {
                 "stage": 3,
                 "offload_optimizer": {
-                    "device": "cpu",
+                    "device": "none",
                     "pin_memory": True
                 },
                 "offload_param": {
-                    "device": "cpu",
+                    "device": "none",
                     "pin_memory": True
                 },
                 "overlap_comm": True,
