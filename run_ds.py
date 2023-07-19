@@ -63,7 +63,7 @@ if __name__ == "__main__":
     world_size = int(os.getenv("WORLD_SIZE", "1"))
     torch.cuda.set_device(local_rank)
     deepspeed.init_distributed()
-    train_batch_size = 3 * world_size
+    train_batch_size = 1 * world_size
 
     
     # ds_config = {
@@ -168,7 +168,7 @@ if __name__ == "__main__":
 
             "steps_per_print": 300,
             "train_batch_size": train_batch_size,
-            "train_micro_batch_size_per_gpu": 3,
+            "train_micro_batch_size_per_gpu": 1,
             "gradient_accumulation_steps": 1,
             "wall_clock_breakdown": False
         }
