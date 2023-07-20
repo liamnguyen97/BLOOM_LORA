@@ -103,7 +103,8 @@ if __name__ == "__main__":
             # save_steps=200,
             output_dir="BLOOM-alpaca",
             # save_total_limit=3,
-            load_best_model_at_end=True,
+            # load_best_model_at_end=True,
+            # deepspeed="ds_config_zero3.json"
             # ddp_find_unused_parameters=False if ddp else None,
         ),
         data_collator= DataCollatorForSeq2Seq(tokenizer = tokenizer,padding = True, return_tensors = "pt")
