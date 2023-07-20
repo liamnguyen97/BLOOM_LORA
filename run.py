@@ -3,8 +3,8 @@ from prompt import Prompter
 from process_analysis import DataProcess
 from model_inputs import MODEL_INPUTS
 from eval_and_test import EVALUATEandTEST
-from train import Trainer
-
+# from train import Trainer
+from transformers import get_scheduler,TrainingArguments,Trainer,DataCollatorForLanguageModeling,DataCollatorForSeq2Seq
 import torch
 from contextlib import nullcontext
 from torch.cuda.amp import GradScaler, autocast
@@ -51,9 +51,9 @@ if __name__ == "__main__":
     train_data.set_format("torch")
     valid_data.set_format("torch")
 
-    train_dataloader, valid_dataloader = model_inputs.prepare_dataloader(train_data,
-                                                                         valid_data,
-                                                                         batch_size = 2)
+    # train_dataloader, valid_dataloader = model_inputs.prepare_dataloader(train_data,
+    #                                                                      valid_data,
+    #                                                                      batch_size = 2)
 
 
     # Train
@@ -64,25 +64,48 @@ if __name__ == "__main__":
                                 prompter = prompter,
                                 ctx = ctx)
     
-    trainer = Trainer(lr = 1e-4,
-                      epochs = 5,
-                      model = lora_model,
-                      gradient_accumulation_steps = 1,
-                      device = device,
-                      evaluate_fn = evalntest.evaluate,
-                      mixed_precision_dtype = mixed_precision_dtype,
-                      scaler = scaler, 
-                      ctx = ctx)
+    # trainer = Trainer(lr = 1e-4,
+    #                   epochs = 5,
+    #                   model = lora_model,
+    #                   gradient_accumulation_steps = 1,
+    #                   device = device,
+    #                   evaluate_fn = evalntest.evaluate,
+    #                   mixed_precision_dtype = mixed_precision_dtype,
+    #                   scaler = scaler, 
+    #                   ctx = ctx)
     
-    # checkpoint = ...
+    # # checkpoint = ...
     
-    trainer.train(train_dataloader = train_dataloader,
-                  display_steps = 500,
-                  save_steps = 3000,
-                  save_name = "bloom-560m-checkpoint.pt",
-                #   valid_dataloader = valid_dataloader,
-                  valid_dataloader= None,
-                  samples_gen = 100,
-                  samples_eval = None,
-                  gen_mode = False,
-                  checkpoint = None)
+    # trainer.train(train_dataloader = train_dataloader,
+    #               display_steps = 500,
+    #               save_steps = 3000,
+    #               save_name = "bloom-560m-checkpoint.pt",
+    #             #   valid_dataloader = valid_dataloader,
+    #               valid_dataloader= None,
+    #               samples_gen = 100,
+    #               samples_eval = None,
+    #               gen_mode = False,
+    #               checkpoint = None)
+    trainer = Trainer(
+        model=lora_model,
+        train_dataset=train_data,
+        args= TrainingArguments(
+            per_device_train_batch_size=2,
+            gradient_accumulation_steps=1,
+            warmup_steps=100,
+            num_train_epochs=3,
+            learning_rate=1e-4,
+            fp16=True,
+            logging_steps=500,
+            # evaluation_strategy="steps",
+            save_strategy="steps",
+            # eval_steps=200,
+            # save_steps=200,
+            output_dir="BLOOM-alpaca",
+            # save_total_limit=3,
+            load_best_model_at_end=True,
+            # ddp_find_unused_parameters=False if ddp else None,
+        ),
+        data_collator= DataCollatorForSeq2Seq(tokenizer = tokenizer,padding = True, return_tensors = "pt")
+    )
+    trainer.train()
