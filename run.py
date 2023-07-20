@@ -92,13 +92,14 @@ if __name__ == "__main__":
         args= TrainingArguments(
             per_device_train_batch_size=2,
             gradient_accumulation_steps=1,
-            warmup_steps=100,
+            # warmup_steps=100,
             num_train_epochs=3,
             learning_rate=1e-4,
             fp16=True,
             logging_steps=500,
+            report_to=None
             # evaluation_strategy="steps",
-            save_strategy="steps",
+            # save_strategy="steps",
             # eval_steps=200,
             # save_steps=200,
             output_dir="BLOOM-alpaca",
