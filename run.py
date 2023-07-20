@@ -97,7 +97,7 @@ if __name__ == "__main__":
             learning_rate=1e-4,
             fp16=True,
             logging_steps=500,
-            report_to=None,
+            report_to="none",
             # evaluation_strategy="steps",
             # save_strategy="steps",
             # eval_steps=200,
