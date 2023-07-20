@@ -97,7 +97,7 @@ if __name__ == "__main__":
             learning_rate=1e-4,
             fp16=True,
             logging_steps=500,
-            report_to=None
+            report_to=None,
             # evaluation_strategy="steps",
             # save_strategy="steps",
             # eval_steps=200,
@@ -105,7 +105,7 @@ if __name__ == "__main__":
             output_dir="BLOOM-alpaca",
             # save_total_limit=3,
             # load_best_model_at_end=True,
-            # deepspeed="ds_config_zero3.json"
+            deepspeed="ds_config_zero3.json"
             # ddp_find_unused_parameters=False if ddp else None,
         ),
         data_collator= DataCollatorForSeq2Seq(tokenizer = tokenizer,padding = True, return_tensors = "pt")
