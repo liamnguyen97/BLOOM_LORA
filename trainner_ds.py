@@ -46,8 +46,8 @@ class Trainer:
                     
                     if current_steps % display_steps == 0:
                         print(f'Epoch: {epoch + 1} -- step: {current_steps} -- train_loss: {total_loss/current_steps} -- lr: {self.lr}')
-                        self.model.save_checkpoint("output")
-
+                        self.model.save_16bit_model("output")
+                        print("Save model end")
                         from deepspeed.utils.zero_to_fp32 import get_fp32_state_dict_from_zero_checkpoint
                         # do the training and checkpoint saving
                         state_dict = get_fp32_state_dict_from_zero_checkpoint("output") # already on cpu
