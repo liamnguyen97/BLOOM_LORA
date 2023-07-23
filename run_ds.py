@@ -55,7 +55,7 @@ if __name__ == "__main__":
     world_size = int(os.getenv("WORLD_SIZE", "1"))
     torch.cuda.set_device(local_rank)
     deepspeed.init_distributed()
-    train_batch_size = 4 * world_size
+    train_batch_size = 2 * world_size
     ds_config = {
             "fp16": {
                 "enabled": True,
@@ -108,7 +108,7 @@ if __name__ == "__main__":
 
             "steps_per_print": 300,
             "train_batch_size": train_batch_size,
-            "train_micro_batch_size_per_gpu": 4,
+            "train_micro_batch_size_per_gpu": 2,
             "gradient_accumulation_steps": 1,
             "wall_clock_breakdown": False
         }
@@ -124,4 +124,4 @@ if __name__ == "__main__":
     
     # checkpoint = ...
     
-    trainer.train(train_dataloader = train_dataloader,display_steps = 500)
+    trainer.train(train_dataloader = train_dataloader,display_steps = 50)
