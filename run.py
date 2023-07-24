@@ -65,9 +65,9 @@ if __name__ == "__main__":
                                 ctx = ctx)
     
     trainer = Trainer(lr = 1e-4,
-                      epochs = 5,
+                      epochs = 3,
                       model = lora_model,
-                      gradient_accumulation_steps = 4,
+                      gradient_accumulation_steps = 1,
                       device = device,
                       evaluate_fn = evalntest.evaluate,
                       mixed_precision_dtype = mixed_precision_dtype,
@@ -80,7 +80,8 @@ if __name__ == "__main__":
                   display_steps = 500,
                   save_steps = 3000,
                   save_name = "bloom-560m-checkpoint.pt",
-                  valid_dataloader = valid_dataloader,
+                  #valid_dataloader = valid_dataloader,
+                  valid_dataloader = None,
                   samples_gen = 100,
                   samples_eval = None,
                   gen_mode = False,
