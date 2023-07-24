@@ -50,7 +50,7 @@ if __name__ == "__main__":
         model=lora_model,
         train_dataset=train_data,
         args= TrainingArguments(
-            per_device_train_batch_size=12,
+            per_device_train_batch_size=10,
             gradient_accumulation_steps=1,
             # warmup_steps=100,
             num_train_epochs=3,
