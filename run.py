@@ -53,7 +53,7 @@ if __name__ == "__main__":
 
     train_dataloader, valid_dataloader = model_inputs.prepare_dataloader(train_data,
                                                                          valid_data,
-                                                                         batch_size = 4)
+                                                                         batch_size = 2)
 
 
     # Train
