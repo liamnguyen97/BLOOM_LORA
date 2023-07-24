@@ -76,7 +76,7 @@ if __name__ == "__main__":
             },
 
             "optimizer": {
-                "type": "FusedAdam",
+                "type": "AdamW",
                 "params": {
                     "lr": 3e-5,
                     "betas": [0.9, 0.95],
