@@ -3,7 +3,7 @@ from prompt import Prompter
 from process_analysis import DataProcess
 from model_inputs import MODEL_INPUTS
 from eval_and_test import EVALUATEandTEST
-from train_ds import Trainer_Ds
+from train_ds import Trainer
 import torch
 from contextlib import nullcontext
 from torch.cuda.amp import GradScaler, autocast
@@ -130,7 +130,7 @@ if __name__ == "__main__":
                                                 padding = True,
                                                 return_tensors = "pt"),  config_params=ds_config)
     # ds_engine.module.train()  # train
-    trainer = Trainer_Ds(lr = 1e-4,
+    trainer = Trainer(lr = 1e-4,
                       epochs = 3,
                       model = ds_engine,                  
                       optimizer = optimizer)

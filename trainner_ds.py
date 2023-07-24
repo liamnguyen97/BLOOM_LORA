@@ -46,9 +46,9 @@ class Trainer:
                     
                     if current_steps % display_steps == 0:
                         print(f'Epoch: {epoch + 1} -- step: {current_steps} -- train_loss: {total_loss/current_steps} -- lr: {self.lr}')
-                        self.model.save_16bit_model("outpu/latest")
+                        # self.model.save_16bit_model("outpu/latest")
                         print("Save model end")
-                        self.model.load_checkpoint("output/latest")
+                        # self.model.load_checkpoint("output/latest")
                       
                     
 
