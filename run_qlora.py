@@ -37,7 +37,7 @@ if __name__ == "__main__":
     device_map = infer_auto_device_map(
         lora_model,
         max_memory=max_memory,
-        # no_split_module_classes=["GPTNeoXLayer", "GPTNeoXMLP"],
+        no_split_module_classes=["DecoderLayer", "Attention", "MLP", "LayerNorm", "Linear"],
         dtype='float16'
     )
 
