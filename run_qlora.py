@@ -139,18 +139,31 @@ if __name__ == "__main__":
             #     "stage3_prefetch_bucket_size": 3e7,
             #     "memory_efficient_linear": False
             # },
-             "zero_optimization": {
-                "stage": 2,
-                "offload_optimizer": {
-                    "device": "cpu",
-                    "pin_memory": True
-                },
-                "allgather_partitions": True,
-                "allgather_bucket_size": 2e8,
-                "overlap_comm": True,
-                "reduce_scatter": True,
-                "reduce_bucket_size": 2e8,
-                "contiguous_gradients": True
+            #  "zero_optimization": {
+            #     "stage": 2,
+            #     "offload_optimizer": {
+            #         "device": "cpu",
+            #         "pin_memory": True
+            #     },
+            #     "allgather_partitions": True,
+            #     "allgather_bucket_size": 2e8,
+            #     "overlap_comm": True,
+            #     "reduce_scatter": True,
+            #     "reduce_bucket_size": 2e8,
+            #     "contiguous_gradients": True
+            # },
+            "zero_optimization": {
+                "stage": 1,
+                # "offload_optimizer": {
+                #     "device": "cpu",
+                #     "pin_memory": True
+                # },
+                # "allgather_partitions": True,
+                # "allgather_bucket_size": 2e8,
+                # "overlap_comm": True,
+                # "reduce_scatter": True,
+                # "reduce_bucket_size": 2e8,
+                # "contiguous_gradients": True
             },
             
             "steps_per_print": 300,
