@@ -63,7 +63,7 @@ if __name__ == "__main__":
     world_size = int(os.getenv("WORLD_SIZE", "1"))
     torch.cuda.set_device(local_rank)
     deepspeed.init_distributed()
-    train_batch_size = 6 * world_size
+    train_batch_size = 4 * world_size
 
     ds_config = {
             "fp16": {
@@ -94,34 +94,47 @@ if __name__ == "__main__":
                 }
             },
 
-            "zero_optimization": {
-                "stage": 3,
+            # "zero_optimization": {
+            #     "stage": 3,
+            #     "offload_optimizer": {
+            #         "device": "none",
+            #         "pin_memory": True
+            #     },
+            #     "offload_param": {
+            #         "device": "none",
+            #         "pin_memory": True
+            #     },
+            #     # "overlap_comm": True,
+            #     # "contiguous_gradients": True,
+            #     # "sub_group_size": 1e9,
+            #     # "reduce_bucket_size": 1e6,
+            #     # "stage3_prefetch_bucket_size": 0.94e6,
+            #     # "stage3_param_persistence_threshold": 1e4,
+            #     # "stage3_max_live_parameters": 1e9,
+            #     # "stage3_max_reuse_distance": 1e9,
+            #     # "stage3_gather_16bit_weights_on_model_save": True
+            #     "stage3_param_persistence_threshold": 1e4,
+            #     "stage3_max_live_parameters": 3e7,
+            #     "stage3_prefetch_bucket_size": 3e7,
+            #     "memory_efficient_linear": False
+            # },
+             "zero_optimization": {
+                "stage": 2,
                 "offload_optimizer": {
-                    "device": "none",
+                    "device": "cpu",
                     "pin_memory": True
                 },
-                "offload_param": {
-                    "device": "none",
-                    "pin_memory": True
-                },
-                # "overlap_comm": True,
-                # "contiguous_gradients": True,
-                # "sub_group_size": 1e9,
-                # "reduce_bucket_size": 1e6,
-                # "stage3_prefetch_bucket_size": 0.94e6,
-                # "stage3_param_persistence_threshold": 1e4,
-                # "stage3_max_live_parameters": 1e9,
-                # "stage3_max_reuse_distance": 1e9,
-                # "stage3_gather_16bit_weights_on_model_save": True
-                "stage3_param_persistence_threshold": 1e4,
-                "stage3_max_live_parameters": 3e7,
-                "stage3_prefetch_bucket_size": 3e7,
-                "memory_efficient_linear": False
+                "allgather_partitions": True,
+                "allgather_bucket_size": 2e8,
+                "overlap_comm": True,
+                "reduce_scatter": True,
+                "reduce_bucket_size": 2e8,
+                "contiguous_gradients": True
             },
-
+            
             "steps_per_print": 300,
             "train_batch_size": train_batch_size,
-            "train_micro_batch_size_per_gpu": 6,
+            "train_micro_batch_size_per_gpu": 4,
             "gradient_accumulation_steps": 1,
             "wall_clock_breakdown": False
         }
