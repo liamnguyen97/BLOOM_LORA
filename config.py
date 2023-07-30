@@ -20,7 +20,8 @@ class Config:
         model = AutoModelForCausalLM.from_pretrained(model_checkpoint,
                                                      quantization_config = bnb_config,
                                                      device_map = "auto")
-        return model.to(self.device)
+        # return model.to(self.device)
+        return model
     
     def add_lora(self, model, r: int, lora_alpha: int, lora_dropout: float):
         lora_config = LoraConfig(r = r,
