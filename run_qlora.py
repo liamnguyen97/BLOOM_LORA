@@ -27,7 +27,7 @@ if __name__ == "__main__":
     lora_model = config.add_lora(model = model, r = 8, lora_alpha = 16, lora_dropout = 0.05)
 
     max_memory = get_balanced_memory(
-        model,
+        lora_model,
         max_memory=None,
         no_split_module_classes=["DecoderLayer", "Attention", "MLP", "LayerNorm", "Linear"],
         dtype='float16',
@@ -35,13 +35,13 @@ if __name__ == "__main__":
     )
     
     device_map = infer_auto_device_map(
-        model,
+        lora_model,
         max_memory=max_memory,
         # no_split_module_classes=["GPTNeoXLayer", "GPTNeoXMLP"],
         dtype='float16'
     )
 
-    model = dispatch_model(model, device_map=device_map)
+    lora_model = dispatch_model(lora_model, device_map=device_map)
 
     # lora_model.to(device)
 
