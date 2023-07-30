@@ -43,7 +43,7 @@ if __name__ == "__main__":
 
     lora_model = dispatch_model(lora_model, device_map=device_map)
 
-    # lora_model.to(device)
+    lora_model.to(device)
 
     # Prompt 
     prompter = Prompter()
