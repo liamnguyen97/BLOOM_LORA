@@ -14,8 +14,7 @@ class Config:
     def load_pretrained_model(self, model_checkpoint):
         model = BloomForCausalLM.from_pretrained(model_checkpoint)
         
-       
-        return model.to(self.device)
+        return model
     
     def add_lora(self, model, r: int, lora_alpha: int, lora_dropout: float):
         lora_config = LoraConfig(r = r,
