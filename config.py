@@ -12,16 +12,10 @@ class Config:
         return tok
     
     def load_pretrained_model(self, model_checkpoint):
-        # model = BloomForCausalLM.from_pretrained(model_checkpoint)
-        bnb_config = BitsAndBytesConfig(load_in_4bit = True,
-                                       bnb_4bit_quant_type = "nf4",
-                                       bnb_4bit_compute_dtype = torch.float16)
+        model = BloomForCausalLM.from_pretrained(model_checkpoint)
         
-        model = AutoModelForCausalLM.from_pretrained(model_checkpoint,
-                                                     quantization_config = bnb_config,
-                                                     device_map = "auto")
-        # return model.to(self.device)
-        return model
+       
+        return model.to(self.device)
     
     def add_lora(self, model, r: int, lora_alpha: int, lora_dropout: float):
         lora_config = LoraConfig(r = r,
